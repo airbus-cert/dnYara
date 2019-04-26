@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Sylvain Bruyere for Airbus CERT</Authors>
+    <Company>Airbus CERT</Company>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <Description>dnYara is a .Net Standard wrapper for the native Yara library. It lets you use all the features of Yara that the native C library exposes !
+
+It is built in C# / .Net Standard to ensure compatibility with a maximum of .Net frameworks, and to be cross-platform.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\dnYara.Interop\dnYara.Interop.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="yara.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
