@@ -1,3 +1,6 @@
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![NuGet](https://img.shields.io/nuget/v/dnYara.svg)](https://www.nuget.org/packages/dnYara/)
+
 # dnYara
 **dnYara** is a .Net wrapper library for the native Yara library. 
 
