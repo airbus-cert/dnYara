@@ -2,11 +2,14 @@
 [![NuGet](https://img.shields.io/nuget/v/dnYara.svg)](https://www.nuget.org/packages/dnYara/)
 
 # dnYara
+
+```
      _                         
   __| |_ __/\_/\__ _ _ __ __ _ 
  / _` | '_ \_ _/ _` | '__/ _` |
 | (_| | | | / \ (_| | | | (_| |
  \__,_|_| |_\_/\__,_|_|  \__,_|
+ ```
 
 **dnYara** is a .Net wrapper library for the native Yara library. 
 
