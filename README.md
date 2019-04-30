@@ -113,7 +113,7 @@ static void Main(string[] args)
                 compiler.AddRuleFile(yara);
             }
 
-            rules = compiler.GetRules();
+            rules = compiler.Compile();
 
             Console.WriteLine($"* Compiled");
         }
