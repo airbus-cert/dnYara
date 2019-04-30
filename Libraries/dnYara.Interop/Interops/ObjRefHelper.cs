@@ -37,7 +37,7 @@ namespace dnYara.Interop
             if (yrMetasPtr == IntPtr.Zero)
                 return false;
 
-            yrMetas = Marshal.PtrToStructure<YR_META>(yrMetasPtr);
+            yrMetas = (YR_META)Marshal.PtrToStructure(yrMetasPtr, typeof(YR_META));
 
             if (yrMetas.type == 0)
                 return false;
@@ -52,7 +52,7 @@ namespace dnYara.Interop
             if (yrStringPtr == IntPtr.Zero)
                 return false;
 
-            yrString = Marshal.PtrToStructure<YR_STRING>(yrStringPtr);
+            yrString = (YR_STRING)Marshal.PtrToStructure(yrStringPtr, typeof(YR_STRING));
 
             if (yrString.identifier == IntPtr.Zero || yrString.g_flags == 0)
                 return false;
@@ -102,7 +102,7 @@ namespace dnYara.Interop
         {
             try
             {
-                YR_MATCH yrMatch = Marshal.PtrToStructure<YR_MATCH>(objRef);
+                YR_MATCH yrMatch = (YR_MATCH)Marshal.PtrToStructure(objRef, typeof(YR_MATCH));
                 return yrMatch;
             }
             catch

@@ -1,7 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.1</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.1</Version>
+    <Company>Airbus CERT</Company>
+    <Authors>Sylvain B. for Airbus CERT</Authors>
+    <Copyright>Airbus CERT</Copyright>
+    <PackageProjectUrl>https://github.com/airbus-cert/dnYara</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/airbus-cert/dnYara</RepositoryUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
