@@ -125,21 +125,13 @@ set(yara_LIBYARA_PROC
 	${yara_LIBYARA_SRC_PATH}/proc/mach.c
 )
 
-if(WIN32)
-	if (NOT BUILD_SHARED_LIB)
-		# Create static library
-		add_library(libyara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
-	else()
-		add_library(libyara SHARED ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
-	endif()
+if (NOT BUILD_SHARED_LIB)
+	# Create static library
+	add_library(libyara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
 else()
-	if (NOT BUILD_SHARED_LIB)
-		# Create static library
-		add_library(yara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
-	else()
-		add_library(yara SHARED ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
-	endif()
+	add_library(libyara SHARED ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
 endif()
+
 
 # Include directories management
 target_include_directories(
