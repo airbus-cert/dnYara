@@ -57,7 +57,7 @@ To create a Makefile and build YARA on _Linux_:
 ```bash
 mkdir build_yara
 cd build_yara
-cmake -G "Unix Makefiles"  ..\libs\cmake
+cmake -G "Unix Makefiles"  ../libs/cmake -DBUILD_SHARED_LIB=ON
 cmake --build . --config [release|debug]
 ```
 

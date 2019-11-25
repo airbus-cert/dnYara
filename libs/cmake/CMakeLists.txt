@@ -24,11 +24,11 @@ else()
 	SET(yara_BUILD_YARA OFF)
 	SET(yara_BUILD_YARAC OFF)
 	SET(yara_BUILD_TESTS OFF)
+	SET(BUILD_SHARED_LIBS "TRUE")
 	
 	if(WIN32)
 		message(STATUS "Explicit Windows export: ON")
 		SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS "TRUE")
-		SET(BUILD_SHARED_LIBS "TRUE")
 	endif()
 endif()
 
