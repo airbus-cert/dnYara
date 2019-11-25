@@ -125,8 +125,21 @@ set(yara_LIBYARA_PROC
 	${yara_LIBYARA_SRC_PATH}/proc/mach.c
 )
 
-# Create static library
-add_library(libyara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
+if(WIN32)
+	if (NOT BUILD_SHARED_LIB)
+		# Create static library
+		add_library(libyara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
+	else()
+		add_library(libyara SHARED ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
+	endif()
+else()
+	if (NOT BUILD_SHARED_LIB)
+		# Create static library
+		add_library(yara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
+	else()
+		add_library(yara SHARED ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
+	endif()
+endif()
 
 # Include directories management
 target_include_directories(
