@@ -87,11 +87,6 @@ set(yara_LIBYARA_MODULES
 )
 
 # Handle module options build
-if(yara_PE_MODULE)
-	add_definitions(-DPE_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/pe.c)
-endif()
-
 if(yara_CUCKOO_MODULE)
 	add_definitions(-DCUCKOO_MODULE)
 	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/cuckoo.c)
