@@ -77,45 +77,88 @@ set(yara_LIBYARA_SRC
 	${yara_LIBYARA_SRC_PATH}/re_grammar.c
 )
 
-set(yara_LIBYARA_MODULES
-	${yara_LIBYARA_SRC_PATH}/modules/tests.c
-	${yara_LIBYARA_SRC_PATH}/modules/pe.c
-	${yara_LIBYARA_SRC_PATH}/modules/elf.c
-	${yara_LIBYARA_SRC_PATH}/modules/math.c
-	${yara_LIBYARA_SRC_PATH}/modules/time.c
-	${yara_LIBYARA_SRC_PATH}/modules/pe_utils.c
-)
+if(EXISTS ${yara_LIBYARA_SRC_PATH}/modules/tests/)
+	set(yara_LIBYARA_MODULES
+		${yara_LIBYARA_SRC_PATH}/modules/tests/tests.c
+		${yara_LIBYARA_SRC_PATH}/modules/pe/pe.c
+		${yara_LIBYARA_SRC_PATH}/modules/elf/elf.c
+		${yara_LIBYARA_SRC_PATH}/modules/math/math.c
+		${yara_LIBYARA_SRC_PATH}/modules/time/time.c
+		${yara_LIBYARA_SRC_PATH}/modules/pe/pe_utils.c
+	)
+	
+	# Handle module options build
+	if(yara_CUCKOO_MODULE)
+		add_definitions(-DCUCKOO_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/cuckoo/cuckoo.c)
+	endif()
 
-# Handle module options build
-if(yara_CUCKOO_MODULE)
-	add_definitions(-DCUCKOO_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/cuckoo.c)
+	if(yara_MAGIC_MODULE AND NOT WIN32)
+		add_definitions(-DMAGIC_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/magic/magic.c)
+	endif()
+
+	if(yara_HASH_MODULE)
+		add_definitions(-DHASH_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/hash/hash.c)
+	endif()
+
+	if(yara_DOTNET_MODULE)
+		add_definitions(-DDOTNET_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dotnet/dotnet.c)
+	endif()
+
+	if(yara_MACHO_MODULE)
+		add_definitions(-DMACHO_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/macho/macho.c)
+	endif()
+
+	if(yara_DEX_MODULE)
+		add_definitions(-DDEX_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dex/dex.c)
+	endif()
+else()
+	set(yara_LIBYARA_MODULES
+		${yara_LIBYARA_SRC_PATH}/modules/tests.c
+		${yara_LIBYARA_SRC_PATH}/modules/pe.c
+		${yara_LIBYARA_SRC_PATH}/modules/elf.c
+		${yara_LIBYARA_SRC_PATH}/modules/math.c
+		${yara_LIBYARA_SRC_PATH}/modules/time.c
+		${yara_LIBYARA_SRC_PATH}/modules/pe_utils.c
+	)
+	
+	# Handle module options build
+	if(yara_CUCKOO_MODULE)
+		add_definitions(-DCUCKOO_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/cuckoo.c)
+	endif()
+
+	if(yara_MAGIC_MODULE AND NOT WIN32)
+		add_definitions(-DMAGIC_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/magic.c)
+	endif()
+
+	if(yara_HASH_MODULE)
+		add_definitions(-DHASH_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/hash.c)
+	endif()
+
+	if(yara_DOTNET_MODULE)
+		add_definitions(-DDOTNET_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dotnet.c)
+	endif()
+
+	if(yara_MACHO_MODULE)
+		add_definitions(-DMACHO_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/macho.c)
+	endif()
+
+	if(yara_DEX_MODULE)
+		add_definitions(-DDEX_MODULE)
+		set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dex.c)
+	endif()
 endif()
 
-if(yara_MAGIC_MODULE AND NOT WIN32)
-	add_definitions(-DMAGIC_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/magic.c)
-endif()
-
-if(yara_HASH_MODULE)
-	add_definitions(-DHASH_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/hash.c)
-endif()
-
-if(yara_DOTNET_MODULE)
-	add_definitions(-DDOTNET_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dotnet.c)
-endif()
-
-if(yara_MACHO_MODULE)
-	add_definitions(-DMACHO_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/macho.c)
-endif()
-
-if(yara_DEX_MODULE)
-	add_definitions(-DDEX_MODULE)
-	set(yara_LIBYARA_MODULES ${yara_LIBYARA_MODULES} ${yara_LIBYARA_SRC_PATH}/modules/dex.c)
-endif()
 
 # Handle proc
 # Actually cmake build system support windows linux and mac
