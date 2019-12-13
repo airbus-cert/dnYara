@@ -25,7 +25,8 @@ namespace dnYara
 
         public void Dispose()
         {
-            Handle.Free();
+            if (Handle != null)
+                Handle.Free();
         }
 
         public IntPtr GetPointer()

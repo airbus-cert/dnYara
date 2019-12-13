@@ -30,7 +30,7 @@ namespace dnYara
 
         public void Dispose()
         {
-            if (BasePtr.Equals(IntPtr.Zero))
+            if (!BasePtr.Equals(IntPtr.Zero))
                 Methods.yr_rules_destroy(BasePtr);
         }
         
