@@ -1,7 +1,9 @@
 name: .NET Core
 
-on: [push]
-
+on:
+  push:
+    paths-ignore:
+    - '**/UnitTests/**'
 jobs:
   build:
 
