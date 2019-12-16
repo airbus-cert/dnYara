@@ -4,6 +4,7 @@ on:
   push:
     paths-ignore:
     - '**/UnitTests/**'
+    - '**/Samples/**'
 jobs:
   build:
 
