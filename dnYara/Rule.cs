@@ -28,6 +28,7 @@ namespace dnYara
             Tags = new List<string>();
         }
 
+
         public Rule(YR_RULE rule)
         {
             IntPtr ptr = rule.identifier;

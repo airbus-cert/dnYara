@@ -226,26 +226,6 @@ namespace dnYara.Interop
         [DllImport(YaraLibName, CallingConvention = CallingConvention.Cdecl)]
         public static extern void yr_finalize();
 
-        /// Return Type: int
-        ///_Stream: FILE*
-        [DllImport(YaraLibName, EntryPoint = "fclose_wr", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fclose_wr(IntPtr _Stream);
-
-        /// Return Type: FILE*
-        ///_FileName: char*
-        ///_Mode: char*
-        [DllImport(YaraLibName, EntryPoint = "fopen_wr", CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr fopen_wr(IntPtr _FileName, IntPtr _Mode);
-
-        /// Return Type: int
-        ///_Stream: FILE**
-        ///_FileName: char*
-        ///_Mode: char*
-        [DllImport(YaraLibName, EntryPoint = "fopen_s_wr", CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fopen_s_wr(
-                out IntPtr _Stream,
-                IntPtr _FileName,
-                IntPtr _Mode);
         
         /// Return Type: void
         [DllImport(YaraLibName, EntryPoint = "yr_finalize_thread")]
@@ -294,7 +274,21 @@ namespace dnYara.Interop
             YR_CALLBACK_FUNC callback, 
             IntPtr user_data, 
             int timeout);
-        
+
+        /// int yr_rules_save(YR_RULES* rules, const char* filename)
+        ///timeout: int
+        [DllImport(YaraLibName, EntryPoint = "yr_rules_save")]
+        public static extern YARA_ERROR yr_rules_save(
+            IntPtr rulesPtr,
+            [In, MarshalAs(UnmanagedType.LPStr)] string filename);
+
+        /// int yr_rules_save(YR_RULES* rules, const char* filename)
+        ///timeout: int
+        [DllImport(YaraLibName, EntryPoint = "yr_rules_load")]
+        public static extern YARA_ERROR yr_rules_load(
+            [In, MarshalAs(UnmanagedType.LPStr)] string filename,
+            ref IntPtr rulesPtr);
+
         /// Return Type: int
         ///rules: YR_RULES*
         ///pid: int

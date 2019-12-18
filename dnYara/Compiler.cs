@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using dnYara.Interop;
 using dnYara.Exceptions;
+using System.IO;
 
 namespace dnYara
 {
@@ -26,6 +27,7 @@ namespace dnYara
             compilerCallback = new YR_COMPILER_CALLBACK_FUNC(this.HandleError);
 
             Methods.yr_compiler_set_callback(compilerPtr, compilerCallback, IntPtr.Zero);
+            
         }
 
         ~Compiler()
@@ -36,9 +38,12 @@ namespace dnYara
         public void Dispose()
         {
             if (!compilerPtr.Equals(IntPtr.Zero))
-                Methods.yr_compiler_destroy(compilerPtr);
+            {
+                var ptr = compilerPtr;
+                compilerPtr = IntPtr.Zero;
+                Methods.yr_compiler_destroy(ptr);
+            }
 
-            compilerPtr = IntPtr.Zero;
         }
         
         public void AddRuleFile(string path)
@@ -50,12 +55,19 @@ namespace dnYara
                 PosixFileHandler fw = new PosixFileHandler(path, "r");
 
                 string nullstr = string.Empty;
+
+                string rule = File.ReadAllText(path);
                 
-                var errors = Methods.yr_compiler_add_file(
+                //var errors = Methods.yr_compiler_add_file(
+                //    compilerPtr,
+                //    fw.FileHandle,
+                //    null,
+                //    path);
+
+                var errors = Methods.yr_compiler_add_string(
                     compilerPtr,
-                    fw.FileHandle,
-                    nullstr,
-                    path);
+                    rule,
+                    nullstr);
 
                 if (errors != 0)
                     throw new CompilationException(compilationErrors);

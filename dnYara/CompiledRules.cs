@@ -17,6 +17,13 @@ namespace dnYara
             BasePtr = rulesPtr;
         }
 
+        public CompiledRules(string filename)
+        {
+            IntPtr ptr = IntPtr.Zero;
+            ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
+            BasePtr = ptr;
+        }
+
         ~CompiledRules()
         {
             Dispose();
@@ -28,17 +35,26 @@ namespace dnYara
             return yrRule;
         }
 
+        public bool Save(string filename)
+        {
+            ErrorUtility.ThrowOnError(Methods.yr_rules_save(BasePtr, filename));
+            return true;
+        }
+
         public void Dispose()
         {
             if (!BasePtr.Equals(IntPtr.Zero))
-                Methods.yr_rules_destroy(BasePtr);
+            {
+                IntPtr ptr = BasePtr;
+                BasePtr = IntPtr.Zero;
+                Methods.yr_rules_destroy(ptr);
+            }
         }
         
         public IntPtr Release()
         {
             var temp = BasePtr;
             BasePtr = default(IntPtr);
-
             return temp;
         }
     }
