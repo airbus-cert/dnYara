@@ -15,8 +15,11 @@ namespace dnYara.Interop
         /// uint8_t*
         public IntPtr code_start;
 
+        /// the sizeof the YR_MUTEX struct is either sizeof HANDLE (32/64 bits on windows), or sizeof pthread_mutex_t (40 bits on nix)
+        /// so this block of bytes needs to be that long to ensure the other field offsets are correct
         /// YR_MUTEX->HANDLE->void*
-        public IntPtr mutex;
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64, ArraySubType = UnmanagedType.I1)]
+        public byte[] mutex;
 
         /// YR_ARENA*
         public IntPtr arena;

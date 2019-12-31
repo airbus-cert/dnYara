@@ -124,5 +124,40 @@ namespace dnYara.UnitTests
                 }
             }
         }
+
+        [Fact]
+        public void CheckIterateRulesTest()
+        {
+            // Initialize yara context
+            using (YaraContext ctx = new YaraContext())
+            {
+                // Compile yara rules
+                CompiledRules rules = null;
+
+                using (var compiler = new Compiler())
+                {
+                    compiler.AddRuleString("rule foo: bar {strings: $a = \"nml\" condition: $a}");
+
+                    rules = compiler.Compile();
+                }
+                System.Threading.Thread.Sleep(2000);
+
+                if (rules != null)
+                {
+                    Assert.NotEmpty(rules.Rules);
+                    var rule = rules.Rules[0];
+                    System.Console.WriteLine($"rule {rule.Identifier}, tags: {rule.Tags}");
+                    Assert.Equal("foo", rule.Identifier);
+                    Assert.Equal("bar", rule.Tags[0]);
+                }
+            }
+        }
+    }
+    class Program {
+        static void Main(string[] args) {
+            System.Console.WriteLine("HEllo");
+            new ScanTests().CheckIterateRulesTest();
+        }
     }
 }
+
