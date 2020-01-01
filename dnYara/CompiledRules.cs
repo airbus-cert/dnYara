@@ -15,14 +15,14 @@ namespace dnYara
         internal IntPtr BasePtr { get; set; }
         private YR_RULES _struct = default(YR_RULES);
         
-        public IEnumerable<Rule> Rules { get; private set; }
+        public List<Rule> Rules { get; private set; }
 
         public CompiledRules(IntPtr rulesPtr)
         {
             BasePtr = rulesPtr;
             _struct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
             
-            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule));
+            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         public CompiledRules(string filename)
@@ -31,7 +31,7 @@ namespace dnYara
             ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
             BasePtr = ptr;
             _struct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule));
+            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         ~CompiledRules()

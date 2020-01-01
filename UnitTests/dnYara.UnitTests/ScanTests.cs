@@ -129,6 +129,17 @@ namespace dnYara.UnitTests
         [Fact]
         public void CheckIterateRulesTest()
         {
+            string ruleText = @"rule foo: bar {
+                meta:
+                    bool_meta = true
+                    int_meta = 10
+                    string_meta = ""what a long, drawn-out thing this is!""
+                strings:
+                    $a = ""nml""
+                condition:
+                    $a
+                }";
+
             // Initialize yara context
             using (YaraContext ctx = new YaraContext())
             {
@@ -137,18 +148,21 @@ namespace dnYara.UnitTests
 
                 using (var compiler = new Compiler())
                 {
-                    compiler.AddRuleString("rule foo: bar {strings: $a = \"nml\" condition: $a}");
+                    compiler.AddRuleString(ruleText);
 
                     rules = compiler.Compile();
                 }
                 System.Threading.Thread.Sleep(2000);
 
                 if (rules != null)
-                {   
+                {
                     var rule = rules.Rules.ToList()[0];
                     Assert.NotEmpty(rules.Rules);
                     Assert.Equal("foo", rule.Identifier);
                     Assert.Equal("bar", rule.Tags[0]);
+                    Assert.Equal(true, rule.Metas["bool_meta"]);
+                    Assert.Equal((long)10, rule.Metas["int_meta"]);
+                    Assert.Equal("what a long, drawn-out thing this is!", rule.Metas["string_meta"]);
                 }
             }
         }

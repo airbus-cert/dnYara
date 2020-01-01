@@ -68,7 +68,7 @@ namespace dnYara.Interop
             });
         
         public static IEnumerable<YR_META> GetMetas(IntPtr yrMetasPtr) => 
-            EachStructOfTInObjRef<YR_META>(yrMetasPtr, meta => meta.type != 0);
+            EachStructOfTInObjRef<YR_META>(yrMetasPtr, meta => meta.type != (int) META_TYPE.META_TYPE_NULL);
 
         public static string GetYRString(IntPtr objRef)
         {

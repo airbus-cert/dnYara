@@ -4,8 +4,10 @@ using System.Runtime.InteropServices;
 
 namespace dnYara.Interop
 {
+
     /// <summary>
-    /// Data structure representing a metadata value.
+    /// Data structure representing a metadata value. Based on `type`, zero or one of `integerValue` or `stringValue` will be filled,
+    /// and if `type` is `META_TYPE_BOOLEAN` then `integerValue` should be parsed as a boolean
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct YR_META
@@ -17,14 +19,14 @@ namespace dnYara.Interop
         /// </summary>
         public int type;
         
-        public long integer;
+        public long integerValue;
 
         /// <summary>
         /// Meta identifier.
         /// </summary>
         public IntPtr identifier;
         
-        public IntPtr strings;
+        public IntPtr stringValue;
     }
 
 }
