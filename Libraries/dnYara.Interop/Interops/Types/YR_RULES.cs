@@ -4,44 +4,48 @@ using System.Runtime.InteropServices;
 
 namespace dnYara.Interop
 {
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    public struct YR_RULES
+    [StructLayout(LayoutKind.Explicit, Size = 64)]
+    public unsafe struct OpaquePthreadMutexT
     {
+        [FieldOffset(0)]
+        public long __sig;
 
-        /// unsigned char[4]
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.tidx_mask_size, ArraySubType = UnmanagedType.I1)]
-        public char[] tidx_mask;
+        [FieldOffset(8)]
+        public fixed sbyte __opaque[56];
+    }
 
-        /// uint8_t*
-        public IntPtr code_start;
+    [StructLayout(LayoutKind.Explicit, Size = 136)]
+    public unsafe struct YR_RULES
+    {   
+        [FieldOffset(0)]
+        public fixed byte tidx_mask[4];
 
-        /// the sizeof the YR_MUTEX struct is either sizeof HANDLE (32/64 bits on windows), or sizeof pthread_mutex_t (40 bits on nix)
-        /// so this block of bytes needs to be that long to ensure the other field offsets are correct
-        /// YR_MUTEX->HANDLE->void*
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64, ArraySubType = UnmanagedType.I1)]
-        public byte[] mutex;
+        [FieldOffset(8)]
+        public global::System.IntPtr code_start;
 
-        /// YR_ARENA*
-        public IntPtr arena;
+        [FieldOffset(16)]
+        public OpaquePthreadMutexT mutex;
 
-        /// YR_RULE*
-        public IntPtr rules_list_head;
+        [FieldOffset(80)]
+        public global::System.IntPtr arena;
 
-        /// YR_EXTERNAL_VARIABLE*
-        public IntPtr externals_list_head;
+        [FieldOffset(88)]
+        public global::System.IntPtr rules_list_head;
 
-        /// YR_AC_TRANSITION_TABLE->YR_AC_TRANSITION*
-        public IntPtr ac_transition_table;
+        [FieldOffset(96)]
+        public global::System.IntPtr externals_list_head;
 
-        /// YR_AC_MATCH_TABLE->YR_AC_MATCH_TABLE_ENTRY*
-        public IntPtr ac_match_table;
+        [FieldOffset(104)]
+        public global::System.IntPtr ac_transition_table;
 
-        // Size of ac_match_table and ac_transition_table in number of items (both
-        // tables have the same numbe of items).
-        public UInt32 ac_tables_size;
+        [FieldOffset(112)]
+        public global::System.IntPtr ac_match_table;
 
-        // Used only when PROFILING_ENABLED is defined.
-        public UInt64 time_cost;
+        [FieldOffset(120)]
+        public uint ac_tables_size;
+
+        [FieldOffset(128)]
+        public ulong time_cost;
     }
 
 }

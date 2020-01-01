@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Xunit;
 
 namespace dnYara.UnitTests
@@ -143,20 +144,13 @@ namespace dnYara.UnitTests
                 System.Threading.Thread.Sleep(2000);
 
                 if (rules != null)
-                {
+                {   
+                    var rule = rules.Rules.ToList()[0];
                     Assert.NotEmpty(rules.Rules);
-                    var rule = rules.Rules[0];
-                    System.Console.WriteLine($"rule {rule.Identifier}, tags: {rule.Tags}");
                     Assert.Equal("foo", rule.Identifier);
                     Assert.Equal("bar", rule.Tags[0]);
                 }
             }
-        }
-    }
-    class Program {
-        static void Main(string[] args) {
-            System.Console.WriteLine("HEllo");
-            new ScanTests().CheckIterateRulesTest();
         }
     }
 }

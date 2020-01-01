@@ -3,34 +3,38 @@ using System.Runtime.InteropServices;
 
 namespace dnYara.Interop
 {
-    [StructLayout(LayoutKind.Sequential)]
-    public struct YR_RULE
+    [StructLayout(LayoutKind.Explicit, Size = 448)]
+    public unsafe struct YR_RULE
     {
-        public Int32 g_flags;       // Global flags
-        
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.YR_MAX_THREADS, ArraySubType = UnmanagedType.I4)]
-        public Int32[] t_flags;     // Thread-specific flags
-        
-        public IntPtr identifier;
-        public IntPtr tags;
-        public IntPtr metas;
-        public IntPtr strings;
-        public IntPtr ns;
+        [FieldOffset(0)]
+        public int g_flags;
 
-        // Number of atoms generated for this rule.
-        public Int32 num_atoms;
+        [FieldOffset(4)]
+        public fixed int t_flags[32];
 
-        // Used only when PROFILING_ENABLED is defined. This is the sum of all values
-        // in time_cost_per_thread. This is updated once on each call to
-        // yr_scanner_scan_xxx.
-        public Int64 time_cost;
+        [FieldOffset(136)]
+        public global::System.IntPtr identifier;
 
-        // Used only when PROFILING_ENABLED is defined. This array holds the time
-        // cost for each thread using this structure concurrenlty. This is necessary
-        // because a global variable causes too much contention while trying to
-        // increment in a synchronized way from multiple threads.
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = Constants.YR_MAX_THREADS, ArraySubType = UnmanagedType.I8)]
-        public Int64[] time_cost_per_thread;
+        [FieldOffset(144)]
+        public global::System.IntPtr tags;
+
+        [FieldOffset(152)]
+        public global::System.IntPtr metas;
+
+        [FieldOffset(160)]
+        public global::System.IntPtr strings;
+
+        [FieldOffset(168)]
+        public global::System.IntPtr ns;
+
+        [FieldOffset(176)]
+        public int num_atoms;
+
+        [FieldOffset(184)]
+        public long time_cost;
+
+        [FieldOffset(192)]
+        public fixed long time_cost_per_thread[32];
     }
 
 }
