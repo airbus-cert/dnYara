@@ -152,7 +152,6 @@ namespace dnYara.UnitTests
 
                     rules = compiler.Compile();
                 }
-                System.Threading.Thread.Sleep(2000);
 
                 if (rules != null)
                 {

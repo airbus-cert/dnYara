@@ -11,6 +11,8 @@ namespace dnYara
     /// </summary>
     public sealed class Rule
     {
+        private Nullable<YR_RULE> _struct;
+
         /// <summary>
         /// Rule identifier.
         /// </summary>
@@ -34,6 +36,8 @@ namespace dnYara
         /// </summary>
         public IDictionary<string, object>  Metas { get; private set; }
 
+        public long TimeCost => _struct.HasValue ? _struct.Value.time_cost : 0;
+
         public Rule()
         {
             Identifier = string.Empty;
@@ -48,13 +52,13 @@ namespace dnYara
                 case META_TYPE.META_TYPE_NULL:
                     break;
                 case META_TYPE.META_TYPE_INTEGER:
-                    v = meta.integerValue;
+                    v = meta.integer;
                     break;
                 case META_TYPE.META_TYPE_BOOLEAN:
-                    v = meta.integerValue == 0 ? false : true;
+                    v = meta.integer == 0 ? false : true;
                     break;
                 case META_TYPE.META_TYPE_STRING:
-                    v = Marshal.PtrToStringAnsi(meta.stringValue);
+                    v = Marshal.PtrToStringAnsi(meta.strings);
                     break;
             }
             return (name, v);
@@ -62,11 +66,12 @@ namespace dnYara
 
         public Rule(YR_RULE rule)
         {
-            IntPtr ptr = rule.identifier;
+            _struct = rule;
+            IntPtr ptr = _struct.Value.identifier;
             Identifier = Marshal.PtrToStringAnsi(ptr);
             Tags = new List<string>();
-            ObjRefHelper.ForEachStringInObjRef(rule.tags, Tags.Add);
-            Metas = ObjRefHelper.GetMetas(rule.metas).Select(ExtractMetaValue).ToDictionary();
+            ObjRefHelper.ForEachStringInObjRef(_struct.Value.tags, Tags.Add);
+            Metas = ObjRefHelper.GetMetas(_struct.Value.metas).Select(ExtractMetaValue).ToDictionary();
 
         }
     }

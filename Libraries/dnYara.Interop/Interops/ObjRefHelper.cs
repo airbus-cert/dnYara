@@ -61,13 +61,13 @@ namespace dnYara.Interop
             }
         }
 
-        public static IEnumerable<YR_RULE> GetRules(IntPtr rulesPtr) => 
+        public static IEnumerable<YR_RULE> GetRules(IntPtr rulesPtr) =>
             EachStructOfTInObjRef<YR_RULE>(rulesPtr, rule => {
                 var result = ObjRefHelper.RuleIsNull(rule);
                 return !result && rule.identifier != IntPtr.Zero;
             });
-        
-        public static IEnumerable<YR_META> GetMetas(IntPtr yrMetasPtr) => 
+
+        public static IEnumerable<YR_META> GetMetas(IntPtr yrMetasPtr) =>
             EachStructOfTInObjRef<YR_META>(yrMetasPtr, meta => meta.type != (int) META_TYPE.META_TYPE_NULL);
 
         public static string GetYRString(IntPtr objRef)

@@ -6,8 +6,8 @@ namespace dnYara.Interop
 {
 
     /// <summary>
-    /// Data structure representing a metadata value. Based on `type`, zero or one of `integerValue` or `stringValue` will be filled,
-    /// and if `type` is `META_TYPE_BOOLEAN` then `integerValue` should be parsed as a boolean
+    /// Data structure representing a metadata value. Based on `type`, zero or one of `integer` or `strings` will be filled,
+    /// and if `type` is `META_TYPE_BOOLEAN` then `integer` should be parsed as a boolean
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct YR_META
@@ -19,14 +19,14 @@ namespace dnYara.Interop
         /// </summary>
         public int type;
         
-        public long integerValue;
+        public long integer;
 
         /// <summary>
         /// Meta identifier.
         /// </summary>
         public IntPtr identifier;
         
-        public IntPtr stringValue;
+        public IntPtr strings;
     }
 
 }
