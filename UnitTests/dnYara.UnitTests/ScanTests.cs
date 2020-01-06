@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Xunit;
 
 namespace dnYara.UnitTests
@@ -124,5 +125,46 @@ namespace dnYara.UnitTests
                 }
             }
         }
+
+        [Fact]
+        public void CheckIterateRulesTest()
+        {
+            string ruleText = @"rule foo: bar {
+                meta:
+                    bool_meta = true
+                    int_meta = 10
+                    string_meta = ""what a long, drawn-out thing this is!""
+                strings:
+                    $a = ""nml""
+                condition:
+                    $a
+                }";
+
+            // Initialize yara context
+            using (YaraContext ctx = new YaraContext())
+            {
+                // Compile yara rules
+                CompiledRules rules = null;
+
+                using (var compiler = new Compiler())
+                {
+                    compiler.AddRuleString(ruleText);
+
+                    rules = compiler.Compile();
+                }
+
+                if (rules != null)
+                {
+                    var rule = rules.Rules.ToList()[0];
+                    Assert.NotEmpty(rules.Rules);
+                    Assert.Equal("foo", rule.Identifier);
+                    Assert.Equal("bar", rule.Tags[0]);
+                    Assert.Equal(true, rule.Metas["bool_meta"]);
+                    Assert.Equal((long)10, rule.Metas["int_meta"]);
+                    Assert.Equal("what a long, drawn-out thing this is!", rule.Metas["string_meta"]);
+                }
+            }
+        }
     }
 }
+

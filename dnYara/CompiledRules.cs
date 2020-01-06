@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using dnYara.Interop;
 
@@ -7,14 +9,18 @@ namespace dnYara
     /// <summary>
     /// Yara compiled rules.
     /// </summary>
-    public sealed class CompiledRules 
+    public sealed class CompiledRules
         : IDisposable
     {
         internal IntPtr BasePtr { get; set; }
 
+        public List<Rule> Rules { get; private set; }
+
         public CompiledRules(IntPtr rulesPtr)
         {
             BasePtr = rulesPtr;
+            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
+            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         public CompiledRules(string filename)
@@ -22,17 +28,13 @@ namespace dnYara
             IntPtr ptr = IntPtr.Zero;
             ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
             BasePtr = ptr;
+            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
+            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         ~CompiledRules()
         {
             Dispose();
-        }
-
-        public YR_RULES GetStruct()
-        {
-            YR_RULES yrRule = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            return yrRule;
         }
 
         public bool Save(string filename)
@@ -50,7 +52,7 @@ namespace dnYara
                 Methods.yr_rules_destroy(ptr);
             }
         }
-        
+
         public IntPtr Release()
         {
             var temp = BasePtr;
