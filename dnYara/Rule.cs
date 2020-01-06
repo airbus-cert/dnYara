@@ -11,8 +11,6 @@ namespace dnYara
     /// </summary>
     public sealed class Rule
     {
-        private Nullable<YR_RULE> _struct;
-
         /// <summary>
         /// Rule identifier.
         /// </summary>
@@ -36,7 +34,7 @@ namespace dnYara
         /// </summary>
         public IDictionary<string, object>  Metas { get; private set; }
 
-        public long TimeCost => _struct.HasValue ? _struct.Value.time_cost : 0;
+        public long TimeCost { get; private set; }
 
         public Rule()
         {
@@ -66,13 +64,12 @@ namespace dnYara
 
         public Rule(YR_RULE rule)
         {
-            _struct = rule;
-            IntPtr ptr = _struct.Value.identifier;
+            IntPtr ptr = rule.identifier;
             Identifier = Marshal.PtrToStringAnsi(ptr);
             Tags = new List<string>();
-            ObjRefHelper.ForEachStringInObjRef(_struct.Value.tags, Tags.Add);
-            Metas = ObjRefHelper.GetMetas(_struct.Value.metas).Select(ExtractMetaValue).ToDictionary();
-
+            ObjRefHelper.ForEachStringInObjRef(rule.tags, Tags.Add);
+            Metas = ObjRefHelper.GetMetas(rule.metas).Select(ExtractMetaValue).ToDictionary();
+            TimeCost = rule.time_cost;
         }
     }
 }

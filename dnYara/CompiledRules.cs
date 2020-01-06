@@ -9,20 +9,18 @@ namespace dnYara
     /// <summary>
     /// Yara compiled rules.
     /// </summary>
-    public sealed class CompiledRules 
+    public sealed class CompiledRules
         : IDisposable
     {
         internal IntPtr BasePtr { get; set; }
-        private YR_RULES _struct = default(YR_RULES);
-        
+
         public List<Rule> Rules { get; private set; }
 
         public CompiledRules(IntPtr rulesPtr)
         {
             BasePtr = rulesPtr;
-            _struct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            
-            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule)).ToList();
+            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
+            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         public CompiledRules(string filename)
@@ -30,18 +28,13 @@ namespace dnYara
             IntPtr ptr = IntPtr.Zero;
             ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
             BasePtr = ptr;
-            _struct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            Rules = ObjRefHelper.GetRules(_struct.rules_list_head).Select(rule => new Rule(rule)).ToList();
+            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
+            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
         }
 
         ~CompiledRules()
         {
             Dispose();
-        }
-
-        public YR_RULES GetStruct()
-        {
-            return _struct;
         }
 
         public bool Save(string filename)
@@ -59,7 +52,7 @@ namespace dnYara
                 Methods.yr_rules_destroy(ptr);
             }
         }
-        
+
         public IntPtr Release()
         {
             var temp = BasePtr;
