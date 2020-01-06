@@ -6,8 +6,8 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Sylvain B. for Airbus CERT</Authors>
     <Company>Airbus CERT</Company>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
+    <AssemblyVersion>1.0.3.3</AssemblyVersion>
+    <FileVersion>1.0.3.3</FileVersion>
     <Description>dnYara is a .Net Standard wrapper for the native Yara library. It lets you use all the features of Yara that the native C library exposes !
 
 It is built in C# / .Net Standard to ensure compatibility with a maximum of .Net frameworks, and to be cross-platform.</Description>
@@ -15,7 +15,7 @@ It is built in C# / .Net Standard to ensure compatibility with a maximum of .Net
     <PackageProjectUrl>https://github.com/airbus-cert/dnYara</PackageProjectUrl>
     <RepositoryUrl>https://github.com/airbus-cert/dnYara</RepositoryUrl>
     <PackageTags>yara, DFIR, detection, malware</PackageTags>
-    <Version>1.0.3.2</Version>
+    <Version>1.0.3.3</Version>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
