@@ -135,12 +135,10 @@ namespace dnYara.Interop
 
         }
 
-        public static readonly int RULE_GFLAGS_NULL = 0x1000;
-
         // replicates the RULE_IS_NULL check from the types.h module of yara.
         // used in rule iteration.
         public static bool RuleIsNull(YR_RULE rule) {
-            return (rule.g_flags & RULE_GFLAGS_NULL) != 0;
+            return (rule.g_flags & Constants.RULE_GFLAGS_NULL) != 0;
         }
     }
 }

@@ -28,5 +28,7 @@
         public const int CALLBACK_MSG_SCAN_FINISHED     = 3;
         public const int CALLBACK_MSG_IMPORT_MODULE     = 4;
         public const int CALLBACK_MSG_MODULE_IMPORTED   = 5;
+
+        public const int RULE_GFLAGS_NULL = 0x1000;
     }
 }
