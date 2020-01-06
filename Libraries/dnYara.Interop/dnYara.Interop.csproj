@@ -9,7 +9,6 @@
     <Company>Airbus CERT</Company>
     <Authors>Sylvain B. for Airbus CERT</Authors>
     <Copyright>Airbus CERT</Copyright>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RepositoryUrl>https://github.com/airbus-cert/dnYara</RepositoryUrl>
     <PackageProjectUrl>https://github.com/airbus-cert/dnYara</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

@@ -7,6 +7,11 @@
         public const int YR_MAX_THREADS = 32;
         public const int tidx_mask_size = (((YR_MAX_THREADS) + (CHAR_BIT - 1)) / CHAR_BIT);
 
+        // This is a placeholder for the raw struct data of a YR_MUTEX, which is a HANDLE on windows and a pthread_mutex_t.
+        // These have varying sizes, and we don't actually care about the contents, so we block out the size to ensure
+        // bit offsets are maintained.
+        public const int yr_mutex_blob_size = 56;
+
         public const int YR_MAX_LOOP_NESTING  = 4;
         public const int YR_MAX_INCLUDE_DEPTH = 16;
 
