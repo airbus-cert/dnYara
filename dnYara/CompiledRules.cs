@@ -19,8 +19,27 @@ namespace dnYara
         public CompiledRules(IntPtr rulesPtr)
         {
             BasePtr = rulesPtr;
-            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
+            ExtractRules();
+        }
+
+        private void ExtractRules()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var ruleStruct = Marshal.PtrToStructure<YR_RULES_WINDOWS>(BasePtr);
+                Rules = ObjRefHelper
+                    .GetRules(ruleStruct.rules_list_head)
+                    .Select(rule => new Rule(rule))
+                    .ToList();
+            } 
+            else
+            {
+                var ruleStruct = Marshal.PtrToStructure<YR_RULES_UNIX>(BasePtr);
+                Rules = ObjRefHelper
+                    .GetRules(ruleStruct.rules_list_head)
+                    .Select(rule => new Rule(rule))
+                    .ToList();
+            }
         }
 
         public CompiledRules(string filename)
@@ -28,8 +47,7 @@ namespace dnYara
             IntPtr ptr = IntPtr.Zero;
             ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
             BasePtr = ptr;
-            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
-            Rules = ObjRefHelper.GetRules(ruleStruct.rules_list_head).Select(rule => new Rule(rule)).ToList();
+            ExtractRules();
         }
 
         ~CompiledRules()
@@ -56,7 +74,7 @@ namespace dnYara
         public IntPtr Release()
         {
             var temp = BasePtr;
-            BasePtr = default(IntPtr);
+            BasePtr = default;
             return temp;
         }
     }
