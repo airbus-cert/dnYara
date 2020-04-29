@@ -6,6 +6,7 @@ set(yara_LIBYARA_INC
 	${yara_LIBYARA_SRC_PATH}/include/yara/ahocorasick.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/arena.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/atoms.h
+	${yara_LIBYARA_SRC_PATH}/include/yara/base64.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/bitmask.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/compiler.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/error.h
@@ -18,6 +19,7 @@ set(yara_LIBYARA_INC
 	${yara_LIBYARA_SRC_PATH}/include/yara/limits.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/mem.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/modules.h
+	${yara_LIBYARA_SRC_PATH}/include/yara/notebook.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/object.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/parser.h
 	${yara_LIBYARA_SRC_PATH}/include/yara/proc.h
@@ -41,6 +43,7 @@ set(yara_LIBYARA_SRC
 	${yara_LIBYARA_SRC_PATH}/ahocorasick.c
 	${yara_LIBYARA_SRC_PATH}/arena.c
 	${yara_LIBYARA_SRC_PATH}/atoms.c
+	${yara_LIBYARA_SRC_PATH}/base64.c
 	${yara_LIBYARA_SRC_PATH}/bitmask.c
 	${yara_LIBYARA_SRC_PATH}/compiler.c
 	${yara_LIBYARA_SRC_PATH}/endian.c
@@ -54,6 +57,7 @@ set(yara_LIBYARA_SRC
 	${yara_LIBYARA_SRC_PATH}/libyara.c
 	${yara_LIBYARA_SRC_PATH}/mem.c
 	${yara_LIBYARA_SRC_PATH}/modules.c
+	${yara_LIBYARA_SRC_PATH}/notebook.c
 	${yara_LIBYARA_SRC_PATH}/object.c
 	${yara_LIBYARA_SRC_PATH}/parser.c
 	${yara_LIBYARA_SRC_PATH}/proc.c
@@ -86,7 +90,7 @@ if(EXISTS ${yara_LIBYARA_SRC_PATH}/modules/tests/)
 		${yara_LIBYARA_SRC_PATH}/modules/time/time.c
 		${yara_LIBYARA_SRC_PATH}/modules/pe/pe_utils.c
 	)
-	
+
 	# Handle module options build
 	if(yara_CUCKOO_MODULE)
 		add_definitions(-DCUCKOO_MODULE)
@@ -126,7 +130,7 @@ else()
 		${yara_LIBYARA_SRC_PATH}/modules/time.c
 		${yara_LIBYARA_SRC_PATH}/modules/pe_utils.c
 	)
-	
+
 	# Handle module options build
 	if(yara_CUCKOO_MODULE)
 		add_definitions(-DCUCKOO_MODULE)
@@ -178,8 +182,8 @@ endif()
 
 # Include directories management
 target_include_directories(
-	libyara 
-	PUBLIC ${yara_LIBYARA_SRC_PATH}/include 
+	libyara
+	PUBLIC ${yara_LIBYARA_SRC_PATH}/include
 	PRIVATE ${yara_LIBYARA_SRC_PATH}
 )
 

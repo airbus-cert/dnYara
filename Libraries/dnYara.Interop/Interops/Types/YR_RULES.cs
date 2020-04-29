@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace dnYara.Interop
 {
-
     [StructLayout(LayoutKind.Sequential)]
     public struct YR_RULES
     {
@@ -29,7 +28,7 @@ namespace dnYara.Interop
         /// YR_AC_MATCH_TABLE->YR_AC_MATCH_TABLE_ENTRY*
         public IntPtr ac_match_table;
 
-        public ushort code_start;
+        public  byte code_start;
 
         // Total number of rules.
         public uint num_rules;
