@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <RuntimeIdentifiers>win;osx;linux</RuntimeIdentifiers>
+    <DefineConstants>$(DefineConstants);osx;</DefineConstants>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>1.0.3.4</Version>
@@ -15,10 +17,11 @@
     <AssemblyVersion>1.0.3.4</AssemblyVersion>
     <FileVersion>1.0.3.4</FileVersion>
   </PropertyGroup>
-  
-
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);$(RuntimeIdentifier)</DefineConstants>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

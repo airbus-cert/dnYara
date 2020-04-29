@@ -32,18 +32,23 @@ namespace dnYara.Interop
         /// </summary>
         public int data_length;
 
-        /// <summary>
-        /// Pointer to a buffer containing a portion of the matching string.
-        /// </summary>
+        /// Pointer to a buffer containing a portion of the matched data. The size of
+        /// the buffer is data_length. data_length is always <= length and is limited
+        /// to YR_CONFIG_MAX_MATCH_DATA bytes.
         public IntPtr dataPtr;
-        
-        public int chain_length;
 
         /// YR_MATCH*
         public IntPtr prev;
 
         /// YR_MATCH*
         public IntPtr next;
+
+        /// If the match belongs to a chained string chain_length contains the
+        /// length of the chain. This field is used only in unconfirmed matches.
+        public int chain_length;
+
+        /// True if this is match for a private string.
+        public bool is_private;
     }
 
 }

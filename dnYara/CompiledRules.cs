@@ -16,38 +16,33 @@ namespace dnYara
 
         public List<Rule> Rules { get; private set; }
 
+        public uint RuleCount { get; private set; }
+        public uint StringsCount { get; private set; }
+        public uint NamespacesCount { get; private set; }
+
         public CompiledRules(IntPtr rulesPtr)
         {
             BasePtr = rulesPtr;
-            ExtractRules();
+            ExtractData();
         }
 
-        private void ExtractRules()
+        private void ExtractData()
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var ruleStruct = Marshal.PtrToStructure<YR_RULES_WINDOWS>(BasePtr);
-                Rules = ObjRefHelper
-                    .GetRules(ruleStruct.rules_list_head)
-                    .Select(rule => new Rule(rule))
-                    .ToList();
-            } 
-            else
-            {
-                var ruleStruct = Marshal.PtrToStructure<YR_RULES_UNIX>(BasePtr);
-                Rules = ObjRefHelper
-                    .GetRules(ruleStruct.rules_list_head)
-                    .Select(rule => new Rule(rule))
-                    .ToList();
-            }
+            var ruleStruct = Marshal.PtrToStructure<YR_RULES>(BasePtr);
+            Rules = ObjRefHelper
+                .GetRules(ruleStruct.rules_list_head)
+                .Select(rule => new Rule(rule))
+                .ToList();
+            RuleCount = ruleStruct.num_rules;
+            StringsCount = ruleStruct.num_strings;
+            NamespacesCount = ruleStruct.num_namespaces;
         }
-
         public CompiledRules(string filename)
         {
             IntPtr ptr = IntPtr.Zero;
             ErrorUtility.ThrowOnError(Methods.yr_rules_load(filename, ref ptr));
             BasePtr = ptr;
-            ExtractRules();
+            ExtractData();
         }
 
         ~CompiledRules()

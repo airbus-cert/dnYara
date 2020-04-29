@@ -34,7 +34,7 @@ namespace dnYara
         /// </summary>
         public IDictionary<string, object>  Metas { get; private set; }
 
-        public long TimeCost { get; private set; }
+        public int AtomsCount { get; private set; }
 
         public Rule()
         {
@@ -69,7 +69,7 @@ namespace dnYara
             Tags = new List<string>();
             ObjRefHelper.ForEachStringInObjRef(rule.tags, Tags.Add);
             Metas = ObjRefHelper.GetMetas(rule.metas).Select(ExtractMetaValue).ToDictionary();
-            TimeCost = rule.time_cost;
+            AtomsCount = rule.num_atoms;
         }
     }
 }

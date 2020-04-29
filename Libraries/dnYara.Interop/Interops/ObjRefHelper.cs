@@ -9,6 +9,8 @@ namespace dnYara.Interop
     {
         private static int POINTER_SIZE = Marshal.SizeOf(IntPtr.Zero);
 
+        /// iterates over a linked-list of YR_STRINGs, starting from a given location.
+        /// performs the equivalent of `yr_rule_strings_foreach`.
         public static void ForEachYaraStringInObjRef(IntPtr ref_obj, Action<YR_STRING> action)
         {
             YR_STRING yrString;
@@ -21,6 +23,9 @@ namespace dnYara.Interop
             }
         }
 
+        public static bool StringIsLastInRule(YR_STRING str) {
+            return (str.flags & Constants.STRING_FLAGS_LAST_IN_RULE) != 0;
+        }
         public static bool CheckYRString(IntPtr yrStringPtr, out YR_STRING yrString)
         {
             yrString = default;
@@ -30,7 +35,7 @@ namespace dnYara.Interop
 
             yrString = (YR_STRING)Marshal.PtrToStructure(yrStringPtr, typeof(YR_STRING));
 
-            if (yrString.identifier == IntPtr.Zero || yrString.g_flags == 0)
+            if (yrString.identifier == IntPtr.Zero || StringIsLastInRule(yrString))
                 return false;
 
             return true;
@@ -77,17 +82,23 @@ namespace dnYara.Interop
             return outStr;
         }
 
-        public static void ForEachStringMatches(YR_STRING str, Action<YR_MATCH> p)
+        /// implements the header-only function`yr_string_matches_foreach` for iterating through
+        /// matches in a scan.
+        public static void ForEachStringMatches(YR_SCAN_CONTEXT scan_context, YR_STRING str, Action<YR_MATCH> p)
         {
-            int idx = Methods.yr_get_tidx();
-            var initMatchPtr = str.matches[idx].head;
+            var str_matches_offset = (int)str.idx * Marshal.SizeOf(typeof(YR_MATCHES));
+            var initMatchPtr = (YR_MATCHES)Marshal.PtrToStructure(scan_context.matches + str_matches_offset, typeof(YR_MATCHES));
             YR_MATCH yrMatch;
 
-            for (var matchPtr = initMatchPtr;
+            for (var matchPtr = initMatchPtr.head;
                 !matchPtr.Equals(IntPtr.Zero);
                 matchPtr = yrMatch.next)
             {
                 yrMatch = GetMatchFromObjRef(matchPtr);
+                if (yrMatch.is_private)
+                {
+                    continue;
+                }
 
                 p(yrMatch);
 
@@ -138,7 +149,7 @@ namespace dnYara.Interop
         // replicates the RULE_IS_NULL check from the types.h module of yara.
         // used in rule iteration.
         public static bool RuleIsNull(YR_RULE rule) {
-            return (rule.g_flags & Constants.RULE_GFLAGS_NULL) != 0;
+            return (rule.flags & Constants.RULE_FLAGS_NULL) != 0;
         }
     }
 }
