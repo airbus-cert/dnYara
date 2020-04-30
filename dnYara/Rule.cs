@@ -66,8 +66,7 @@ namespace dnYara
         {
             IntPtr ptr = rule.identifier;
             Identifier = Marshal.PtrToStringAnsi(ptr);
-            Tags = new List<string>();
-            ObjRefHelper.ForEachStringInObjRef(rule.tags, Tags.Add);
+            Tags = ObjRefHelper.IterateCStrings(rule.tags).ToList();
             Metas = ObjRefHelper.GetMetas(rule.metas).Select(ExtractMetaValue).ToDictionary();
             AtomsCount = rule.num_atoms;
         }
