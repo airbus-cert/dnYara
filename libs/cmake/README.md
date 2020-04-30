@@ -50,6 +50,8 @@ These modules are available from CMake generation and are *not* enabled by defau
 * `yara_MACHO_MODULE`
 * `yara_DEX_MODULE`
 
+In addition, profiling support can be enabled with `yara_ENABLE_PROFILING` in the same manner.
+
 ## Testing
 
 You can call the YARA test suite directly from CMake using `ctest`:

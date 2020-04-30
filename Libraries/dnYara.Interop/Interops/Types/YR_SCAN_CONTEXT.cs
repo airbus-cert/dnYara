@@ -88,7 +88,5 @@ namespace dnYara.Interop
         /// profiling_info is a pointer to an array of YR_PROFILING_INFO structures,
         /// one per rule. Entry N has the profiling information for rule with index N.
         public IntPtr profiling_info;
-
-
     }
 }

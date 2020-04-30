@@ -172,6 +172,10 @@ set(yara_LIBYARA_PROC
 	${yara_LIBYARA_SRC_PATH}/proc/mach.c
 )
 
+if (yara_ENABLE_PROFILING)
+  add_definitions(-DYRPROFILING_ENABLED)
+endif()
+
 if (NOT BUILD_SHARED_LIB)
 	# Create static library
 	add_library(libyara ${yara_LIBYARA_SRC} ${yara_LIBYARA_INC} ${yara_LIBYARA_MODULES} ${yara_LIBYARA_PROC})
