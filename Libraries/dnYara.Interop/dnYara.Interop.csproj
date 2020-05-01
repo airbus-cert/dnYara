@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>netstandard1.1</TargetFrameworks>
     <RuntimeIdentifiers>win;osx;linux</RuntimeIdentifiers>
-    <DefineConstants>$(DefineConstants);osx;</DefineConstants>
+    <ExtrasBuildEachRuntimeIdentifier>true</ExtrasBuildEachRuntimeIdentifier>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>1.0.3.4</Version>
@@ -17,13 +17,6 @@
     <AssemblyVersion>1.0.3.4</AssemblyVersion>
     <FileVersion>1.0.3.4</FileVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);$(RuntimeIdentifier)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TRACE</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\dnYara.NativePack\dnYara.NativePack.csproj">
       <Private>true</Private>
