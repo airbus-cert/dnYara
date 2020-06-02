@@ -35,5 +35,11 @@
         public const int CALLBACK_MSG_MODULE_IMPORTED   = 5;
 
         public const int RULE_GFLAGS_NULL = 0x1000;
+
+        public const int RULE_FLAGS_NULL = 0x04;
+
+        public const int STRING_FLAGS_LAST_IN_RULE = 0x1000;
+
+        public const int META_FLAGS_LAST_IN_RULE = 1;
     }
 }

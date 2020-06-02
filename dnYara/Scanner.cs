@@ -12,17 +12,17 @@ namespace dnYara
         private const int YR_TIMEOUT = 10000;
 
         private YR_CALLBACK_FUNC callbackPtr;
-        
+
         public Scanner()
         {
             callbackPtr = new YR_CALLBACK_FUNC(HandleMessage);
         }
-        
+
         public virtual List<ScanResult> ScanFile(string path, CompiledRules rules)
         {
             return ScanFile(path, rules, YR_SCAN_FLAGS.None);
         }
-        
+
         public virtual List<ScanResult> ScanFile(
             string path,
             CompiledRules rules,
@@ -49,12 +49,12 @@ namespace dnYara
 
             return results;
         }
-        
+
         public virtual List<ScanResult> ScanProcess(int processId, CompiledRules rules)
         {
             return ScanProcess(processId, rules, YR_SCAN_FLAGS.None);
         }
-        
+
         public virtual List<ScanResult> ScanProcess(
             int processId,
             CompiledRules rules,
@@ -76,8 +76,8 @@ namespace dnYara
         }
 
         public virtual List<ScanResult> ScanString(
-            string text, 
-            CompiledRules rules, 
+            string text,
+            CompiledRules rules,
             Encoding encoding = null)
         {
             if (encoding == null)
@@ -89,7 +89,7 @@ namespace dnYara
         }
 
         public virtual List<ScanResult> ScanStream(
-            Stream stream, 
+            Stream stream,
             CompiledRules rules)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -102,12 +102,12 @@ namespace dnYara
         }
 
         public virtual List<ScanResult> ScanMemory(
-            ref byte[] buffer, 
+            ref byte[] buffer,
             CompiledRules rules)
         {
             return ScanMemory(ref buffer, rules, YR_SCAN_FLAGS.None);
         }
-        
+
         public List<ScanResult> ScanMemory(
             ref byte[] buffer,
             CompiledRules rules,
@@ -137,7 +137,7 @@ namespace dnYara
             Marshal.Copy(buffer, res, 0, length);
             return ScanMemory(ref res, length, rules, flags);
         }
-        
+
         public virtual List<ScanResult> ScanMemory(
             ref byte[] buffer,
             int length,
@@ -164,17 +164,19 @@ namespace dnYara
         }
 
         private YR_CALLBACK_RESULT HandleMessage(
-            int message, 
-            IntPtr data, 
-            IntPtr context)
+            IntPtr context,
+            int message,
+            IntPtr message_data,
+            IntPtr user_data)
         {
             if (message == Constants.CALLBACK_MSG_RULE_MATCHING)
             {
-                var resultsHandle = GCHandle.FromIntPtr(context);
+                var resultsHandle = GCHandle.FromIntPtr(user_data);
                 var results = (List<ScanResult>)resultsHandle.Target;
 
-                YR_RULE rule = Marshal.PtrToStructure<YR_RULE>(data);
-                results.Add(new ScanResult(rule));
+                YR_RULE rule = Marshal.PtrToStructure<YR_RULE>(message_data);
+                YR_SCAN_CONTEXT scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT>(context);
+                results.Add(new ScanResult(scan_context, rule));
             }
 
             return YR_CALLBACK_RESULT.Continue;

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace dnYara.Interop
 {
@@ -9,94 +10,109 @@ namespace dnYara.Interop
     {
         private static int POINTER_SIZE = Marshal.SizeOf(IntPtr.Zero);
 
-        public static void ForEachYaraStringInObjRef(IntPtr ref_obj, Action<YR_STRING> action)
+        /// calculates the C-array offset for a struct of type `T` at index `index`
+        private static int OffsetFor<T>(int index) => index * Marshal.SizeOf(typeof(T));
+
+        private static T IndexedGet<T>(IntPtr array_start, int index) {
+            var array_offset = OffsetFor<T>(index);
+            var struct_at_index = (T)Marshal.PtrToStructure(array_start + array_offset, typeof(T));
+            return struct_at_index;
+        }
+
+        private static bool IsNull(IntPtr p) => p == IntPtr.Zero;
+
+        /// iterates over a linked-list of YR_STRINGs, starting from a given location.
+        /// performs the equivalent of `yr_rule_strings_foreach`.
+        public static IEnumerable<YR_STRING> GetYaraStrings(IntPtr ref_obj) =>
+            EachStructOfTInObjRef<YR_STRING>(
+                ref_obj,
+                Yes<YR_STRING>,
+                ((ptr, yrString) => NullIfPredicateElseStructSize(StringIsLastInRule, ptr, yrString))
+            );
+
+        private static bool MetaIsLastInRule(YR_META m) => (m.flags & Constants.META_FLAGS_LAST_IN_RULE) != 0;
+
+        private static bool StringIsLastInRule(YR_STRING str) => (str.flags & Constants.STRING_FLAGS_LAST_IN_RULE) != 0;
+
+        public static IEnumerable<string> IterateCStrings(IntPtr ref_obj)
         {
-            YR_STRING yrString;
+            string currentString;
             for (
-                IntPtr yrStringPtr = ref_obj;
-                CheckYRString(yrStringPtr, out yrString);
-                yrStringPtr += POINTER_SIZE)
+                IntPtr stringPtr = ref_obj;
+                SafeMarshalString(stringPtr, out currentString);
+                stringPtr += currentString.Length + 1)
             {
-                action(yrString);
+                yield return currentString;
             }
         }
 
-        public static bool CheckYRString(IntPtr yrStringPtr, out YR_STRING yrString)
-        {
-            yrString = default;
+        /// Incrementer that bumps an IntPtr by the size of the struct it represents
+        private static IntPtr IncrementByStructSize<T>(IntPtr prev, T instance) => prev + Marshal.SizeOf(typeof(T));
 
-            if (yrStringPtr == IntPtr.Zero)
-                return false;
-
-            yrString = (YR_STRING)Marshal.PtrToStructure(yrStringPtr, typeof(YR_STRING));
-
-            if (yrString.identifier == IntPtr.Zero || yrString.g_flags == 0)
-                return false;
-
-            return true;
-        }
-
-        public static void ForEachStringInObjRef(IntPtr ref_obj, Action<string> action)
-        {
-            string tagName;
-            for (
-                IntPtr tagNamePtr = ref_obj;
-                CheckTag(tagNamePtr, out tagName);
-                tagNamePtr += tagName.Length + 1)
-            {
-                action(tagName);
+        private static IntPtr NullIfPredicateElseStructSize<T>(Func<T, bool> predicate, IntPtr basePtr, T instance) {
+            if(predicate(instance)){
+                return IntPtr.Zero;
             }
+            return IncrementByStructSize<T>(basePtr, instance);
         }
+
+        /// helper function that is true for all input
+        private static bool Yes<T>(T item) => true;
 
         /// walks a variable-sized array of pointers of type T, marshalling and running a custom validation function on each iteration of the pointer
         /// This is an abstraction around specialized loops like `ForEachYaraMetaInObjRef`
-        public static IEnumerable<T> EachStructOfTInObjRef<T>(IntPtr ref_obj, Func<T, bool> validityChecker) where T: struct {
+        public static IEnumerable<T> EachStructOfTInObjRef<T>(IntPtr ref_obj, Func<T, bool> validityChecker, Func<IntPtr, T, IntPtr> incrementer) where T : struct
+        {
             T structPtr;
             for (
                 IntPtr structArrayPtr = ref_obj;
                 MarshalAndValidate(structArrayPtr, validityChecker, out structPtr);
-                structArrayPtr += Marshal.SizeOf(typeof(T)))
+                structArrayPtr = incrementer(structArrayPtr, structPtr)
+            )
             {
                 yield return structPtr;
             }
         }
 
         public static IEnumerable<YR_RULE> GetRules(IntPtr rulesPtr) =>
-            EachStructOfTInObjRef<YR_RULE>(rulesPtr, rule => {
-                var result = ObjRefHelper.RuleIsNull(rule);
-                return !result && rule.identifier != IntPtr.Zero;
-            });
+            EachStructOfTInObjRef<YR_RULE>(
+                rulesPtr, 
+                (rule => !RuleIsNull(rule)),
+                IncrementByStructSize<YR_RULE>
+            );
 
+
+        private static bool MetaIsNull(YR_META m) => m.type == (int)META_TYPE.META_TYPE_NULL;
+        
         public static IEnumerable<YR_META> GetMetas(IntPtr yrMetasPtr) =>
-            EachStructOfTInObjRef<YR_META>(yrMetasPtr, meta => meta.type != (int) META_TYPE.META_TYPE_NULL);
+            EachStructOfTInObjRef<YR_META>(
+                yrMetasPtr, 
+                Yes<YR_META>,
+                (ptr, meta) => NullIfPredicateElseStructSize(MetaIsLastInRule, ptr, meta)
+            );
 
-        public static string GetYRString(IntPtr objRef)
+        public static string ReadYaraString(YR_STRING s)
         {
             string outStr;
-            CheckTag(objRef, out outStr);
+            SafeMarshalString(s.identifier, out outStr);
             return outStr;
         }
 
-        public static void ForEachStringMatches(YR_STRING str, Action<YR_MATCH> p)
+        /// implements the header-only function`yr_string_matches_foreach` for iterating through
+        /// matches in a scan.
+        public static IEnumerable<YR_MATCH> GetStringMatches(YR_SCAN_CONTEXT scan_context, YR_STRING str)
         {
-            int idx = Methods.yr_get_tidx();
-            var initMatchPtr = str.matches[idx].head;
-            YR_MATCH yrMatch;
+            var string_matches = IndexedGet<YR_MATCHES>(scan_context.matches, (int)str.idx);
 
-            for (var matchPtr = initMatchPtr;
-                !matchPtr.Equals(IntPtr.Zero);
-                matchPtr = yrMatch.next)
-            {
-                yrMatch = GetMatchFromObjRef(matchPtr);
-
-                p(yrMatch);
-
-                if (yrMatch.next == IntPtr.Zero)
-                    return;
-            }
+            return
+                EachStructOfTInObjRef<YR_MATCH>(string_matches.head,
+                    Yes<YR_MATCH>,
+                    ((ptr, m) => m.next)
+                )
+                .Where(m => !m.is_private);
         }
 
-        public static YR_MATCH GetMatchFromObjRef(IntPtr objRef)
+        private static YR_MATCH GetMatchFromObjRef(IntPtr objRef)
         {
             try
             {
@@ -110,9 +126,11 @@ namespace dnYara.Interop
             }
         }
 
-        public static bool MarshalAndValidate<T>(IntPtr struct_ptr, Func<T, bool> validityChecker, out T destination_ptr) where T : struct {
+        private static bool MarshalAndValidate<T>(IntPtr struct_ptr, Func<T, bool> validityChecker, out T destination_ptr) where T : struct
+        {
             destination_ptr = default(T);
-            if (struct_ptr == IntPtr.Zero) {
+            if (IsNull(struct_ptr))
+            {
                 return false;
             }
 
@@ -120,25 +138,28 @@ namespace dnYara.Interop
             return validityChecker(destination_ptr);
         }
 
-        public static bool CheckTag(IntPtr tag_ptr, out string tagName)
+        private static bool SafeMarshalString(IntPtr cstring_ptr, out string stringContent)
         {
 
-            tagName = null;
-            if (tag_ptr == IntPtr.Zero)
+            stringContent = null;
+            if (IsNull(cstring_ptr))
                 return false;
 
-            tagName = Marshal.PtrToStringAnsi(tag_ptr);
-            if (string.IsNullOrEmpty(tagName))
+            stringContent = Marshal.PtrToStringAnsi(cstring_ptr);
+            if (string.IsNullOrEmpty(stringContent))
                 return false;
 
             return true;
-
         }
 
         // replicates the RULE_IS_NULL check from the types.h module of yara.
         // used in rule iteration.
-        public static bool RuleIsNull(YR_RULE rule) {
-            return (rule.g_flags & Constants.RULE_GFLAGS_NULL) != 0;
+        private static bool RuleIsNull(YR_RULE rule) => (rule.flags & Constants.RULE_FLAGS_NULL) != 0;
+
+        public static Nullable<YR_PROFILING_INFO> TryGetProfilingInfoForRule(YR_SCAN_CONTEXT context, int rule_index) {
+            if(IsNull(context.profiling_info)) return null;
+
+            return IndexedGet<YR_PROFILING_INFO>(context.profiling_info, rule_index);
         }
     }
 }

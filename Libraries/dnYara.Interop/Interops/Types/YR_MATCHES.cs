@@ -8,14 +8,15 @@ namespace dnYara.Interop
     public struct YR_MATCHES
     {
 
-        /// int
-        public int count;
-
         /// Anonymous_28ff42bc_8abe_4b79_9a59_b52bac15297f
         public IntPtr head;
 
         /// Anonymous_215b690c_5de2_45cc_beb5_cde3daeb9b5b
         public IntPtr tail;
+
+        /// int
+        public int count;
+
     }
 
 }

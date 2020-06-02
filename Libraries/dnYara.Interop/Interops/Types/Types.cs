@@ -15,10 +15,18 @@ namespace dnYara.Interop
     ///error_level: int
     ///file_name: char*
     ///line_number: int
+    ///rule: YR_RULE*
     ///message: char*
     ///user_data: void*
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void YR_COMPILER_CALLBACK_FUNC(int error_level, [In, MarshalAs(UnmanagedType.LPStr)] string file_name, int line_number, [In()] [MarshalAs(UnmanagedType.LPStr)] string message, IntPtr user_data);
+    public delegate void YR_COMPILER_CALLBACK_FUNC(
+        int error_level,
+        [In, MarshalAs(UnmanagedType.LPStr)] string file_name,
+        int line_number,
+        IntPtr rule,
+        [In()] [MarshalAs(UnmanagedType.LPStr)] string message,
+        IntPtr user_data
+    );
 
     /// Return Type: char*
     ///include_name: char*
@@ -47,7 +55,7 @@ namespace dnYara.Interop
     ///message_data: void*
     ///user_data: void*
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate YR_CALLBACK_RESULT YR_CALLBACK_FUNC(int message, System.IntPtr message_data, System.IntPtr user_data);
+    public delegate YR_CALLBACK_RESULT YR_CALLBACK_FUNC(System.IntPtr context, int message, System.IntPtr message_data, System.IntPtr user_data);
 
     /// Return Type: int
     ///config: YR_ATOMS_CONFIG*
@@ -55,5 +63,5 @@ namespace dnYara.Interop
     ///atom_length: int
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate int YR_ATOMS_QUALITY_FUNC(ref YR_ATOMS_CONFIG config, IntPtr atom, int atom_length);
-    
+
 }

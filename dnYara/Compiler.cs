@@ -4,21 +4,22 @@ using System.ComponentModel;
 using dnYara.Interop;
 using dnYara.Exceptions;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace dnYara
 {
     /// <summary>
     /// Yara compiler wrapper
     /// </summary>
-    public class Compiler 
+    public class Compiler
         : IDisposable
     {
         private IntPtr compilerPtr;
 
         private List<string> compilationErrors;
         private YR_COMPILER_CALLBACK_FUNC compilerCallback;
-        
-        public Compiler() 
+
+        public Compiler()
         {
             ErrorUtility.ThrowOnError(Methods.yr_compiler_create(out compilerPtr));
 
@@ -27,7 +28,7 @@ namespace dnYara
             compilerCallback = new YR_COMPILER_CALLBACK_FUNC(this.HandleError);
 
             Methods.yr_compiler_set_callback(compilerPtr, compilerCallback, IntPtr.Zero);
-            
+
         }
 
         ~Compiler()
@@ -45,7 +46,7 @@ namespace dnYara
             }
 
         }
-        
+
         public void AddRuleFile(string path)
         {
             compilationErrors.Clear();
@@ -57,7 +58,7 @@ namespace dnYara
                 string nullstr = string.Empty;
 
                 string rule = File.ReadAllText(path);
-                
+
                 //var errors = Methods.yr_compiler_add_file(
                 //    compilerPtr,
                 //    fw.FileHandle,
@@ -77,7 +78,7 @@ namespace dnYara
                 throw new Win32Exception(e.HResult, e.Message);
             }
         }
-        
+
         public void AddRuleString(string rule)
         {
             compilationErrors.Clear();
@@ -90,17 +91,17 @@ namespace dnYara
             if (errors != 0)
                 throw new CompilationException(compilationErrors);
         }
-        
+
         public CompiledRules Compile()
         {
             IntPtr rulesPtr = new IntPtr();
 
             ErrorUtility.ThrowOnError(
                 Methods.yr_compiler_get_rules(compilerPtr, ref rulesPtr));
-            
+
             return new CompiledRules(rulesPtr);
         }
-        
+
         public static CompiledRules CompileRulesFile(string path)
         {
             Compiler yc = new Compiler();
@@ -108,7 +109,7 @@ namespace dnYara
 
             return yc.Compile();
         }
-        
+
         public static CompiledRules CompileRulesString(string rule)
         {
             Compiler yc = new Compiler();
@@ -121,14 +122,21 @@ namespace dnYara
             int errorLevel,
             string fileName,
             int lineNumber,
+            IntPtr rule,
             string message,
             IntPtr userData)
         {
-            var msg = string.Format("Line {1}, file: {2}: {0}",
+
+            var marshaledRule = rule == IntPtr.Zero
+                ? new System.Nullable<YR_RULE>()
+                : Marshal.PtrToStructure<YR_RULE>(rule);
+            var ruleName = marshaledRule.HasValue ? "No Rule" : Marshal.PtrToStringAnsi(marshaledRule.Value.identifier);
+            var msg = string.Format("rule {3}, Line {1}, file: {2}: {0}",
                 message,
                 lineNumber,
-                string.IsNullOrWhiteSpace(fileName) ? fileName : "[none]");
-            
+                string.IsNullOrWhiteSpace(fileName) ? fileName : "[none]",
+                ruleName);
+
             compilationErrors.Add(msg);
         }
     }
