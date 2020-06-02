@@ -29,9 +29,10 @@ With YARA, you can create malware family descriptions (or what you want to descr
 ### Yara as a dynamic link library aside dnYara
 dnYara works with the Yara library (libyara) compiled dynamically at his side, and with his exports.
 
-It is important to make sure that you have Yara 3.8.0++ compiled beside it
+It is important to make sure that you have Yara 4.0 ++ compiled beside it
 - `libyara.dll` for Windows OS
-- `libyara.so` for your linux / macosx platform
+- `libyara.so` for linux
+- `libyara.dylib` for macosx platform
 
 ### Build YARA with CMake
 The directory `libs\cmake` contains *CMake* files that can be used to build YARA with MSVC on Windows, or Makefile on Unix-based systems.
