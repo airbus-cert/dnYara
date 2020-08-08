@@ -92,6 +92,50 @@ namespace dnYara
                 throw new CompilationException(compilationErrors);
         }
 
+        public void DeclareExternalStringVariable(string name, string defaultValue = "")
+        {
+            var errors = Methods.yr_compiler_define_string_variable(
+                compilerPtr,
+                name,
+                defaultValue);
+
+            if (errors != 0)
+                throw new InvalidDataException($"Error {errors} in DeclareExternalStringVariable '{name}'='{defaultValue}'");
+        }
+
+        public void DeclareExternalIntVariable(string name, long defaultValue = 0)
+        {
+            var errors = Methods.yr_scanner_define_integer_variable(
+                compilerPtr,
+                name,
+                defaultValue);
+
+            if (errors != 0)
+                throw new InvalidDataException($"Error {errors} in DeclareExternalIntVariable '{name}'={defaultValue}");
+        }
+
+        public void DeclareExternalFloatVariable(string name, double defaultValue = 0)
+        {
+            var errors = Methods.yr_scanner_define_float_variable(
+                compilerPtr,
+                name,
+                defaultValue);
+
+            if (errors != 0)
+                throw new InvalidDataException($"Error {errors} in DeclareExternalFloatVariable setting '{name}'={defaultValue}");
+        }
+
+        public void DeclareExternalBooleanVariable(string name, bool defaultValue = false)
+        {
+            var errors = Methods.yr_compiler_define_boolean_variable(
+                compilerPtr,
+                name,
+                defaultValue == true ? 1 : 0);
+
+            if (errors != 0)
+                throw new InvalidDataException($"Error {errors} in DeclareExternalBooleanVariable setting '{name}'={defaultValue}");
+        }
+
         public CompiledRules Compile()
         {
             IntPtr rulesPtr = new IntPtr();
