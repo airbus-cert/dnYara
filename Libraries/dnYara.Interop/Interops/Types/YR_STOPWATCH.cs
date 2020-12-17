@@ -1,17 +1,14 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace dnYara.Interop
 {
-
-#if WIN
     [StructLayout(LayoutKind.Sequential)]
-    public struct YR_STOPWATCH
+    public struct YR_STOPWATCH_WIN
     {
         public ulong frequency;
         public ulong start;
     }
-#elif OSX
+
     [StructLayout(LayoutKind.Sequential)]
     public struct mach_timebase_info
     {
@@ -20,12 +17,12 @@ namespace dnYara.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct YR_STOPWATCH
+    public struct YR_STOPWATCH_OSX
     {
         public mach_timebase_info timebase;
         public ulong start;
     }
-#elif LINUX
+
     [StructLayout(LayoutKind.Sequential)]
     public struct timeval {
         public long tv_sec;
@@ -39,11 +36,9 @@ namespace dnYara.Interop
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct YR_STOPWATCH
+    public struct YR_STOPWATCH_LINUX
     {
         public timeval tv_start;
         public timespec ts_start;
     }
-#endif
-
 }

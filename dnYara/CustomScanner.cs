@@ -242,8 +242,7 @@ namespace dnYara
                 var results = (List<ScanResult>)resultsHandle.Target;
 
                 YR_RULE rule = Marshal.PtrToStructure<YR_RULE>(message_data);
-                YR_SCAN_CONTEXT scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT>(context);
-                results.Add(new ScanResult(scan_context, rule));
+                results.Add(new ScanResult(context, rule));
             }
 
             return YR_CALLBACK_RESULT.Continue;

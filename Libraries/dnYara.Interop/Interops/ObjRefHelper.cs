@@ -100,9 +100,9 @@ namespace dnYara.Interop
 
         /// implements the header-only function`yr_string_matches_foreach` for iterating through
         /// matches in a scan.
-        public static IEnumerable<YR_MATCH> GetStringMatches(YR_SCAN_CONTEXT scan_context, YR_STRING str)
+        public static IEnumerable<YR_MATCH> GetStringMatches(IntPtr matches, YR_STRING str)
         {
-            var string_matches = IndexedGet<YR_MATCHES>(scan_context.matches, (int)str.idx);
+            var string_matches = IndexedGet<YR_MATCHES>(matches, (int)str.idx);
 
             return
                 EachStructOfTInObjRef<YR_MATCH>(string_matches.head,
@@ -156,10 +156,10 @@ namespace dnYara.Interop
         // used in rule iteration.
         private static bool RuleIsNull(YR_RULE rule) => (rule.flags & Constants.RULE_FLAGS_NULL) != 0;
 
-        public static Nullable<YR_PROFILING_INFO> TryGetProfilingInfoForRule(YR_SCAN_CONTEXT context, int rule_index) {
-            if(IsNull(context.profiling_info)) return null;
+        public static Nullable<YR_PROFILING_INFO> TryGetProfilingInfoForRule(IntPtr profilingInfoPtr, int rule_index) {
+            if(IsNull(profilingInfoPtr)) return null;
 
-            return IndexedGet<YR_PROFILING_INFO>(context.profiling_info, rule_index);
+            return IndexedGet<YR_PROFILING_INFO>(profilingInfoPtr, rule_index);
         }
     }
 }
