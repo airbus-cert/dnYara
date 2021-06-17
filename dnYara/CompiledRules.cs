@@ -47,6 +47,8 @@ namespace dnYara
 
         ~CompiledRules()
         {
+            if (BasePtr != default)
+                Release();
             Dispose();
         }
 
