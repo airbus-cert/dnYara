@@ -23,10 +23,16 @@ namespace dnYara
         {
             if (customScannerPtr != IntPtr.Zero)
             {
-                Methods.yr_scanner_destroy(customScannerPtr);
+                Release();
             }
         }
 
+        //must be called before the context is destroyed (ie: falling out of a using())
+        public void Release()
+        {
+            Methods.yr_scanner_destroy(customScannerPtr);
+            customScannerPtr = IntPtr.Zero;
+        }
 
         private void CreateNewScanner(CompiledRules rules, YR_SCAN_FLAGS flags, int timeout)
         {

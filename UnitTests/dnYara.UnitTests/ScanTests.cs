@@ -188,7 +188,7 @@ namespace dnYara.UnitTests
 
                     List<ScanResult> compiledScanResults = scanner.ScanMemory(ref buffer, compiledRules);
                     Assert.True(compiledScanResults.Count == 1);
-                    Assert.Equal(compiledScanResults[0].MatchingRule.Identifier, "foo");
+                    Assert.Equal("foo", compiledScanResults[0].MatchingRule.Identifier);
 
 
                     //save the rule to disk
@@ -202,7 +202,7 @@ namespace dnYara.UnitTests
                     List<ScanResult> loadedScanResults = scanner.ScanMemory(ref buffer, loadedRules);
 
                     Assert.True(loadedScanResults.Count == 1);
-                    Assert.Equal(loadedScanResults[0].MatchingRule.Identifier, "foo");
+                    Assert.Equal("foo", loadedScanResults[0].MatchingRule.Identifier);
 
                     System.IO.File.Delete(tempfile);
                 }
@@ -242,7 +242,7 @@ namespace dnYara.UnitTests
                     Assert.Equal("foo", compiledScanResults[0].MatchingRule.Identifier);
 
                     //release before falling out of the yara context
-                    scanner.Release();
+                    scanner.Release();                    
                 }
 
 

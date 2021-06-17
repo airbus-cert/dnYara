@@ -62,19 +62,19 @@ namespace dnYara
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 YR_SCAN_CONTEXT_WIN scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_WIN>(scanContext);
-                return scan_context.matches;
+                return scan_context.profiling_info;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 YR_SCAN_CONTEXT_LINUX scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_LINUX>(scanContext);
-                return scan_context.matches;
+                return scan_context.profiling_info;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 YR_SCAN_CONTEXT_OSX scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_OSX>(scanContext);
-                return scan_context.matches;
+                return scan_context.profiling_info;
             }
             return IntPtr.Zero;
         }
@@ -84,19 +84,19 @@ namespace dnYara
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 YR_SCAN_CONTEXT_WIN scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_WIN>(scanContext);
-                return scan_context.profiling_info;
+                return scan_context.matches;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             {
                 YR_SCAN_CONTEXT_LINUX scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_LINUX>(scanContext);
-                return scan_context.profiling_info;
+                return scan_context.matches;
             }
 
             if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             {
                 YR_SCAN_CONTEXT_OSX scan_context = Marshal.PtrToStructure<YR_SCAN_CONTEXT_OSX>(scanContext);
-                return scan_context.profiling_info;
+                return scan_context.matches;
             }
             return IntPtr.Zero;
         }
