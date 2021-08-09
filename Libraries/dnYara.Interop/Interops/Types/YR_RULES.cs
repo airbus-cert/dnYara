@@ -28,7 +28,7 @@ namespace dnYara.Interop
         /// YR_AC_MATCH_TABLE->YR_AC_MATCH_TABLE_ENTRY*
         public IntPtr ac_match_table;
 
-        public  byte code_start;
+        public IntPtr code_start;
 
         // Total number of rules.
         public uint num_rules;
