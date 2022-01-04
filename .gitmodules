@@ -1,3 +1,4 @@
 [submodule "libs/yara"]
 	path = libs/yara
 	url = https://github.com/VirusTotal/yara.git
+	branch = v3.11.0
