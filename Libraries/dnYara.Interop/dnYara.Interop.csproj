@@ -15,6 +15,7 @@
     <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <FileVersion>1.1.0.0</FileVersion>
     <Product>dnYara.Interop (for Yara 3.x)</Product>
+    <Description>(for Yara 3.x)</Description>
   </PropertyGroup>
   
 
