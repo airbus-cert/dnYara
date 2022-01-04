@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.0.3.4</Version>
+    <Version>2.0.0.0</Version>
     <LangVersion>7.3</LangVersion>
     <Company>Airbus CERT</Company>
     <Authors>Sylvain B. for Airbus CERT</Authors>
@@ -12,8 +12,11 @@
     <RepositoryUrl>https://github.com/airbus-cert/dnYara</RepositoryUrl>
     <PackageProjectUrl>https://github.com/airbus-cert/dnYara</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <AssemblyVersion>1.0.3.4</AssemblyVersion>
-    <FileVersion>1.0.3.4</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <PackageId>dnYara.Interop</PackageId>
+    <Product>dnYara.Interop (for Yara 4.x)</Product>
+    <Description>(for Yara 4.x)</Description>
   </PropertyGroup>
 
 

@@ -64,7 +64,7 @@ cmake --build . --config [release|debug]
 
 By default the Yara modules are not included, but you can either :
 - select which you want to include: eg. `-D yara_CUCKOO_MODULE`
-- or include all of them:  `-D yara_WITH_ALL_MODULES=ON`
+- or include all of them:  `-D yara_ALL_MODULES=ON`
 
 ***More information : https://github.com/airbus-cert/yara/tree/cmake/cmake***
 

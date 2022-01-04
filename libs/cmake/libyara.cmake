@@ -82,15 +82,28 @@ set(yara_LIBYARA_SRC
 )
 
 if(EXISTS ${yara_LIBYARA_SRC_PATH}/modules/tests/)
-	set(yara_LIBYARA_MODULES
-		${yara_LIBYARA_SRC_PATH}/modules/tests/tests.c
-		${yara_LIBYARA_SRC_PATH}/modules/pe/pe.c
-		${yara_LIBYARA_SRC_PATH}/modules/elf/elf.c
-		${yara_LIBYARA_SRC_PATH}/modules/math/math.c
-		${yara_LIBYARA_SRC_PATH}/modules/time/time.c
-		${yara_LIBYARA_SRC_PATH}/modules/pe/pe_utils.c
-	)
-
+	# Handle module options build
+	if(EXISTS ${yara_LIBYARA_SRC_PATH}/modules/console/)
+		set(yara_LIBYARA_MODULES
+			${yara_LIBYARA_SRC_PATH}/modules/console/console.c
+			${yara_LIBYARA_SRC_PATH}/modules/tests/tests.c
+			${yara_LIBYARA_SRC_PATH}/modules/pe/pe.c
+			${yara_LIBYARA_SRC_PATH}/modules/elf/elf.c
+			${yara_LIBYARA_SRC_PATH}/modules/math/math.c
+			${yara_LIBYARA_SRC_PATH}/modules/time/time.c
+			${yara_LIBYARA_SRC_PATH}/modules/pe/pe_utils.c
+		)
+	else()		
+		set(yara_LIBYARA_MODULES
+			${yara_LIBYARA_SRC_PATH}/modules/tests/tests.c
+			${yara_LIBYARA_SRC_PATH}/modules/pe/pe.c
+			${yara_LIBYARA_SRC_PATH}/modules/elf/elf.c
+			${yara_LIBYARA_SRC_PATH}/modules/math/math.c
+			${yara_LIBYARA_SRC_PATH}/modules/time/time.c
+			${yara_LIBYARA_SRC_PATH}/modules/pe/pe_utils.c
+		)
+	endif()
+	
 	# Handle module options build
 	if(yara_CUCKOO_MODULE)
 		add_definitions(-DCUCKOO_MODULE)

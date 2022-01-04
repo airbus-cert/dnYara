@@ -263,3 +263,4 @@ paket-files/
 __pycache__/
 *.pyc
 /libs/cmake/out/build/x64-Debug
+/build_yara*
