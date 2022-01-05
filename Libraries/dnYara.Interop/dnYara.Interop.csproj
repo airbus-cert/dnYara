@@ -4,7 +4,7 @@
     <TargetFramework>netstandard1.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>2.0.0.0</Version>
+    <Version>2.1.0.0</Version>
     <LangVersion>7.3</LangVersion>
     <Company>Airbus CERT</Company>
     <Authors>Sylvain B. for Airbus CERT</Authors>
@@ -12,22 +12,19 @@
     <RepositoryUrl>https://github.com/airbus-cert/dnYara</RepositoryUrl>
     <PackageProjectUrl>https://github.com/airbus-cert/dnYara</PackageProjectUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageId>dnYara.Interop</PackageId>
-    <Product>dnYara.Interop (for Yara 4.x)</Product>
-    <Description>(for Yara 4.x)</Description>
+    <Product>dnYara.Interop (for Yara 4.0.0 to 4.1.1)</Product>
+    <Description>Interop .Net library for Yara shared library (libyara v4.0.0 to v4.1.1).
+
+The compiled libyara shared library for Windows can be provided by dnYara.NativePack.
+You can also compile the library yourself for your platform with cmake (instruction at https://github.com/airbus-cert/dnYara).</Description>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\dnYara.NativePack\dnYara.NativePack.csproj">
-      <Private>true</Private>
-    </ProjectReference>
-  </ItemGroup>
 
 </Project>

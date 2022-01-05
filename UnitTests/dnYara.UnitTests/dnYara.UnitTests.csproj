@@ -12,5 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\dnYara\dnYara.csproj" />
+    <ProjectReference Include="..\..\Libraries\dnYara.Interop\dnYara.Interop.csproj" />
+    <ProjectReference Include="..\..\Libraries\dnYara.NativePack\dnYara.NativePack.csproj" />
   </ItemGroup>
 </Project>
