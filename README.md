@@ -26,18 +26,26 @@ With YARA, you can create malware family descriptions (or what you want to descr
 
 ## Pre-requisite
 
-### Yara as a dynamic link library aside dnYara
-dnYara works with the Yara library (libyara) compiled dynamically at his side, and with his exports.
+### Shared Yara library *libyara* aside dnYara
+dnYara works with the Yara library (libyara) compiled according to the running platform, at his side.
 
 It is important to make sure that you have Yara 4.0 ++ compiled beside it
 - `libyara.dll` for Windows OS
 - `libyara.so` for linux
 - `libyara.dylib` for macosx platform
 
-### Build YARA with CMake
+
+#### Using NuGet package *dnYara.NativePack* to catch Yara 4.1.1 shared library for Windows
+
+You can use a pre-compiled version of Yara 4.1.1 shared library for Windows by using *dnYara.NativePack* NuGet package:
+`dotnet add package dnYara.NativePack --version 2.1.0.1`
+
+This will put the pre-compiled libyara.dll (64 bits) aside your project.
+
+#### Build YARA shared library with CMake
 The directory `libs\cmake` contains *CMake* files that can be used to build YARA with MSVC on Windows, or Makefile on Unix-based systems.
 
-### Windows
+##### Windows
 To create  a Visual Studio 2019 project and build YARA on _Windows_:
 
 ```bash
@@ -52,7 +60,7 @@ For earlier version of Visual Studio, please check your CMAKE_GENERATOR_PLATFORM
 - `Visual Studio 14 2015`
 - etc.
 
-#### Linux
+##### Linux
 To create a Makefile and build YARA on _Linux_:
 
 ```bash
