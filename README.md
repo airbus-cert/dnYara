@@ -110,49 +110,45 @@ static void Main(string[] args)
         @"e:\speficic-samples\sample1.exe"  // file
     };
 
-    // Initialize yara context
-    using (YaraContext ctx = new YaraContext())
+
+    // Compile list of yara rules
+    CompiledRules rules = null;
+    using (var compiler = new Compiler())
     {
-        // Compile list of yara rules
-        CompiledRules rules = null;
-        using (var compiler = new Compiler())
+        foreach (var yara in ruleFiles)
         {
-            foreach (var yara in ruleFiles)
-            {
-                compiler.AddRuleFile(yara);
-            }
-
-            rules = compiler.Compile();
-
-            Console.WriteLine($"* Compiled");
+            compiler.AddRuleFile(yara);
         }
 
-        if (rules != null)
+        rules = compiler.Compile();
+
+        Console.WriteLine($"* Compiled");
+    }
+
+    if (rules != null)
+    {
+        // Initialize the scanner
+        var scanner = new Scanner();
+
+        // Go through all samples
+        foreach (var sample in samples)
         {
-            // Initialize the scanner
-            var scanner = new Scanner();
-
-            // Go through all samples
-            foreach (var sample in samples)
+            // If item is file, scan the file
+            if (File.Exists(sample))
             {
-                // If item is file, scan the file
-                if (File.Exists(sample))
+                ScanFile(scanner, sample, rules);
+            }
+            // If item is directory, scan the directory
+            else
+            {
+                if (Directory.Exists(sample))
                 {
-                    ScanFile(scanner, sample, rules);
-                }
-                // If item is directory, scan the directory
-                else
-                {
-                    if (Directory.Exists(sample))
-                    {
-                        DirectoryInfo dirInfo = new DirectoryInfo(sample);
+                    DirectoryInfo dirInfo = new DirectoryInfo(sample);
 
-                        foreach (FileInfo fi in dirInfo.EnumerateFiles("*", SearchOption.AllDirectories))
-                            ScanFile(scanner, fi.FullName, rules);
-                    }
+                    foreach (FileInfo fi in dirInfo.EnumerateFiles("*", SearchOption.AllDirectories))
+                        ScanFile(scanner, fi.FullName, rules);
                 }
             }
-
         }
                 
     }

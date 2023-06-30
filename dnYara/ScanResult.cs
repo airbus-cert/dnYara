@@ -5,7 +5,6 @@ using dnYara.Interop;
 
 namespace dnYara
 {
-
     public class ScanResult
     {
         public Rule MatchingRule;

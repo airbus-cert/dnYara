@@ -21,6 +21,8 @@ namespace dnYara
 
         public Compiler()
         {
+            YaraContext.Instance.EnsureInitialized();
+
             ErrorUtility.ThrowOnError(Methods.yr_compiler_create(out compilerPtr));
 
             compilationErrors = new List<string>();
@@ -49,6 +51,8 @@ namespace dnYara
 
         public void AddRuleFile(string path)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             compilationErrors.Clear();
 
             try
@@ -81,6 +85,8 @@ namespace dnYara
 
         public void AddRuleString(string rule)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             compilationErrors.Clear();
 
             var errors = Methods.yr_compiler_add_string(
@@ -94,6 +100,8 @@ namespace dnYara
 
         public void DeclareExternalStringVariable(string name, string defaultValue = "")
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var errors = Methods.yr_compiler_define_string_variable(
                 compilerPtr,
                 name,
@@ -105,6 +113,8 @@ namespace dnYara
 
         public void DeclareExternalIntVariable(string name, long defaultValue = 0)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var errors = Methods.yr_scanner_define_integer_variable(
                 compilerPtr,
                 name,
@@ -116,6 +126,8 @@ namespace dnYara
 
         public void DeclareExternalFloatVariable(string name, double defaultValue = 0)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var errors = Methods.yr_scanner_define_float_variable(
                 compilerPtr,
                 name,
@@ -127,6 +139,8 @@ namespace dnYara
 
         public void DeclareExternalBooleanVariable(string name, bool defaultValue = false)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var errors = Methods.yr_compiler_define_boolean_variable(
                 compilerPtr,
                 name,
@@ -138,6 +152,8 @@ namespace dnYara
 
         public CompiledRules Compile()
         {
+            YaraContext.Instance.EnsureInitialized();
+
             IntPtr rulesPtr = new IntPtr();
 
             ErrorUtility.ThrowOnError(
@@ -148,6 +164,8 @@ namespace dnYara
 
         public static CompiledRules CompileRulesFile(string path)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             Compiler yc = new Compiler();
             yc.AddRuleFile(path);
 
@@ -156,6 +174,8 @@ namespace dnYara
 
         public static CompiledRules CompileRulesString(string rule)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             Compiler yc = new Compiler();
             yc.AddRuleString(rule);
 

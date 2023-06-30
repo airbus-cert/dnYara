@@ -7,26 +7,22 @@ namespace YaraInteractive
     {
         static void Main(string[] args)
         {
-            using (var ctx = new YaraContext())
+            Console.WriteLine("# Welcome to Yara Interactive Console...");
+
+            while (true)
             {
-                Console.WriteLine("# Welcome to Yara Interactive Console...");
+                Console.Write("> ");
 
-                while (true)
-                {
-                    Console.Write("> ");
+                string command = Console.ReadLine();
 
-                    string command = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(command))
+                    continue;
 
-                    if (string.IsNullOrWhiteSpace(command))
-                        continue;
+                bool isManagedCmd = CmdHandler.ExecuteCmd(command);
 
-                    bool isManagedCmd = CmdHandler.ExecuteCmd(command);
-
-                    if (!isManagedCmd)
-                        Console.WriteLine(":Err: Unknown command...");
-                }
+                if (!isManagedCmd)
+                    Console.WriteLine(":Err: Unknown command...");
             }
         }
-
     }
 }

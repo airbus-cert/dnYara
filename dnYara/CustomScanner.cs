@@ -30,12 +30,16 @@ namespace dnYara
         //must be called before the context is destroyed (ie: falling out of a using())
         public void Release()
         {
+            YaraContext.Instance.EnsureInitialized();
+
             Methods.yr_scanner_destroy(customScannerPtr);
             customScannerPtr = IntPtr.Zero;
         }
 
         private void CreateNewScanner(CompiledRules rules, YR_SCAN_FLAGS flags, int timeout)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             ErrorUtility.ThrowOnError(
                 Methods.yr_scanner_create(rules.BasePtr, out IntPtr newScanner));
 
@@ -45,8 +49,17 @@ namespace dnYara
             SetTimeout(timeout);
         }
 
-        public virtual void SetFlags(YR_SCAN_FLAGS flags) => Methods.yr_scanner_set_flags(customScannerPtr, (int)flags);
-        public virtual void SetTimeout(int timeout) => Methods.yr_scanner_set_timeout(customScannerPtr, timeout);
+        public virtual void SetFlags(YR_SCAN_FLAGS flags)
+        {
+            YaraContext.Instance.EnsureInitialized();
+            Methods.yr_scanner_set_flags(customScannerPtr, (int)flags);
+        }
+
+        public virtual void SetTimeout(int timeout)
+        {
+            YaraContext.Instance.EnsureInitialized();
+            Methods.yr_scanner_set_timeout(customScannerPtr, timeout);
+        }
 
         private bool TestAllVariablesUnique(ExternalVariables externalVariables, out string duplicatesListString)
         {
@@ -73,6 +86,8 @@ namespace dnYara
 
         private void SetExternalVariables(ExternalVariables externalVariables)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             if (!TestAllVariablesUnique(externalVariables, out string duplicates))
             {
                 throw new InvalidDataException("Duplicate external variable names declared: " + duplicates);
@@ -99,6 +114,8 @@ namespace dnYara
         //a new scanner should be created if it's imporant for them not to exist
         private void ClearExternalVariables(ExternalVariables externalVariables)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             foreach (KeyValuePair<string, string> variable in externalVariables.StringVariables)
                 ErrorUtility.ThrowOnError(
                     Methods.yr_scanner_define_string_variable(customScannerPtr, variable.Key, String.Empty));
@@ -119,6 +136,8 @@ namespace dnYara
 
         public virtual List<ScanResult> ScanFile(string path, ExternalVariables externalVariables)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             if (customScannerPtr == IntPtr.Zero)
                 throw new NullReferenceException("Custom Scanner has not been initialised");
 
@@ -212,6 +231,8 @@ namespace dnYara
             ExternalVariables externalVariables,
             YR_SCAN_FLAGS flags)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             YR_CALLBACK_FUNC scannerCallback = new YR_CALLBACK_FUNC(HandleMessage);
             List<ScanResult> scanResults = new List<ScanResult>();
             GCHandleHandler resultsHandle = new GCHandleHandler(scanResults);
