@@ -15,6 +15,7 @@ namespace dnYara
 
         public Scanner()
         {
+            YaraContext.Instance.EnsureInitialized();
             callbackPtr = new YR_CALLBACK_FUNC(HandleMessage);
         }
 
@@ -30,6 +31,8 @@ namespace dnYara
         {
             if (!File.Exists(path))
                 throw new FileNotFoundException(path);
+
+            YaraContext.Instance.EnsureInitialized();
 
             var results = new List<ScanResult>();
             var nativePath = path;
@@ -60,6 +63,8 @@ namespace dnYara
             CompiledRules rules,
             YR_SCAN_FLAGS flags)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var results = new List<ScanResult>();
             GCHandleHandler resultsHandle = new GCHandleHandler(results);
 
@@ -144,6 +149,8 @@ namespace dnYara
             CompiledRules rules,
             YR_SCAN_FLAGS flags)
         {
+            YaraContext.Instance.EnsureInitialized();
+
             var results = new List<ScanResult>();
             GCHandleHandler resultsHandle = new GCHandleHandler(results);
 
